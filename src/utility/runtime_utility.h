@@ -1,0 +1,4 @@
+#ifndef VOICEVOX_ENGINE_RUNTIME_UTILITY
+#define VOICEVOX_ENGINE_RUNTIME_UTILITY
+bool is_development();
+#endif
