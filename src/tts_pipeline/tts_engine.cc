@@ -400,7 +400,7 @@ std::tuple<std::vector<int64_t>, std::vector<float>, std::vector<float>> frame_q
   std::vector<int64_t> phoneme_lengths;
   for (auto &&phoneme : *query->phonemes)
   {
-    if (!vector_has(&PhonemeList, &phoneme.phoneme))
+    if (!vector_has(&PhonemeList, phoneme.phoneme))
       throw "phoneme is not valid";
     phonemes.emplace_back(Phoneme::id(phoneme.phoneme));
     phoneme_lengths.emplace_back(phoneme.frame_length);

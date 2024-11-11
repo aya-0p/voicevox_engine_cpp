@@ -5,7 +5,7 @@
 #include "./util.h"
 #include <filesystem>
 
-void vec2arr_int64_t(std::vector<int64_t> *vec, int64_t first, int64_t last, int64_t *arr)
+void vec2arr(std::vector<int64_t> *vec, int64_t first, int64_t last, int64_t *arr)
 {
   arr[0] = first;
   for (size_t i = 0; i < vec->size() + 2; i++)
@@ -16,7 +16,7 @@ void vec2arr_int64_t(std::vector<int64_t> *vec, int64_t first, int64_t last, int
   return;
 }
 
-void vec2arr_int64_t(std::vector<int64_t> *vec, int64_t *arr)
+void vec2arr(std::vector<int64_t> *vec, int64_t *arr)
 {
   for (size_t i = 0; i < vec->size(); i++)
   {
@@ -25,7 +25,7 @@ void vec2arr_int64_t(std::vector<int64_t> *vec, int64_t *arr)
   return;
 }
 
-std::vector<int64_t> arr2vec_int64_t(int64_t *arr, int64_t size)
+std::vector<int64_t> arr2vec(int64_t *arr, int64_t size)
 {
   std::vector<int64_t> vec(size);
   for (size_t i = 0; i < vec.size(); i++)
@@ -35,7 +35,7 @@ std::vector<int64_t> arr2vec_int64_t(int64_t *arr, int64_t size)
   return vec;
 }
 
-void vec2arr_float(std::vector<float> *vec, float first, float last, float *arr)
+void vec2arr(std::vector<float> *vec, float first, float last, float *arr)
 {
   arr[0] = first;
   for (size_t i = 0; i < vec->size() + 2; i++)
@@ -46,7 +46,7 @@ void vec2arr_float(std::vector<float> *vec, float first, float last, float *arr)
   return;
 }
 
-void vec2arr_float(std::vector<float> *vec, float *arr)
+void vec2arr(std::vector<float> *vec, float *arr)
 {
   for (size_t i = 0; i < vec->size(); i++)
   {
@@ -55,7 +55,7 @@ void vec2arr_float(std::vector<float> *vec, float *arr)
   return;
 }
 
-std::vector<float> arr2vec_float(float *arr, int64_t size)
+std::vector<float> arr2vec(float *arr, int64_t size)
 {
   std::vector<float> vec(size);
   for (size_t i = 0; i < vec.size(); i++)
@@ -100,8 +100,8 @@ std::string user_data_dir(std::string const &appname)
   return std::string(std::filesystem::path("~/.local/share") / appname);
 #endif
 }
-template <typename T>
-std::vector<T> numpy_repeat(std::vector<T> *a, std::vector<int64_t> *repeats)
+
+std::vector<std::vector<float>> numpy_repeat(std::vector<std::vector<float>> *a, std::vector<int64_t> *repeats)
 {
   size_t length = std::min(a->size(), repeats->size());
   size_t size = 0;
@@ -109,7 +109,7 @@ std::vector<T> numpy_repeat(std::vector<T> *a, std::vector<int64_t> *repeats)
   {
     size += (*repeats)[i];
   }
-  std::vector<T> vec = std::vector<T>(size, 0);
+  std::vector<std::vector<float>> vec = std::vector<std::vector<float>>(size, std::vector<float>());
   size = 0;
   for (size_t i = 0; i < length; i++)
   {
@@ -121,25 +121,52 @@ std::vector<T> numpy_repeat(std::vector<T> *a, std::vector<int64_t> *repeats)
   }
   return vec;
 }
-template <typename T>
-std::vector<T> numpy_repeat(std::vector<T> *a, int64_t repeats)
+std::vector<float> numpy_repeat(std::vector<float> *a, std::vector<int64_t> *repeats)
 {
-  std::vector<T> vec = std::vector<T>(a->size() * repeats, 0);
-  for (size_t i = 0; i < a->size(); i++)
+  size_t length = std::min(a->size(), repeats->size());
+  size_t size = 0;
+  for (size_t i = 0; i < length; i++)
   {
-    for (size_t j = 0; j < repeats; j++)
+    size += (*repeats)[i];
+  }
+  std::vector<float> vec = std::vector<float>(size, 0);
+  size = 0;
+  for (size_t i = 0; i < length; i++)
+  {
+    for (size_t j = 0; j < (*repeats)[i]; j++)
     {
-      vec[i * repeats + j] = (*a)[i];
+      vec[size] = (*a)[i];
+      size++;
     }
   }
   return vec;
 }
-template <typename T>
-bool vector_has(std::vector<T> *vec, T *data)
+std::vector<int64_t> numpy_repeat(std::vector<int64_t> *a, std::vector<int64_t> *repeats)
 {
-  for (T &&ve : *vec)
+  size_t length = std::min(a->size(), repeats->size());
+  size_t size = 0;
+  for (size_t i = 0; i < length; i++)
   {
-    if (*data == ve) return true;
+    size += (*repeats)[i];
+  }
+  std::vector<int64_t> vec = std::vector<int64_t>(size, 0);
+  size = 0;
+  for (size_t i = 0; i < length; i++)
+  {
+    for (size_t j = 0; j < (*repeats)[i]; j++)
+    {
+      vec[size] = (*a)[i];
+      size++;
+    }
+  }
+  return vec;
+}
+
+bool vector_has(std::vector<std::string> *vec, std::string const &data)
+{
+  for (auto &&ve : *vec)
+  {
+    if (data == ve) return true;
   }
   return false;
 }
@@ -152,10 +179,10 @@ std::vector<std::string> copy_strings(std::vector<std::string> *vec)
   }
   return vec_new;
 }
-template <typename T>
-std::vector<T> numpy_concatenate(std::vector<std::vector<T>> *arrays)
+
+std::vector<int64_t> numpy_concatenate(std::vector<std::vector<int64_t>> *arrays)
 {
-  std::vector<T> vec;
+  std::vector<int64_t> vec;
   for (auto &&t_vec_1 : *arrays)
   {
     for (auto &&t_vec_2 : t_vec_1)
