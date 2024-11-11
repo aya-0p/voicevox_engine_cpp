@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10)
 project(voicevox_engine_cpp VERSION 0.1 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-set(CMAKE_CXX_FLAGS "-g -O0 -g3")
+set(CMAKE_CXX_FLAGS_DEBUG "-g")
 
 add_executable(
   voicevox_engine_cpp
