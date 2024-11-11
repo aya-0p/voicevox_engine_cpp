@@ -15,4 +15,5 @@ enum CharState
   SecondCharIs0x82 = 3,
   SecondCharIs0x83 = 4,
 };
+void init_kana_converter();
 #endif

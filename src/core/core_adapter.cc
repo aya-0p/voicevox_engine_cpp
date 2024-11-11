@@ -37,7 +37,10 @@ std::vector<CoreCharacter> CoreAdapter::characters()
       std::string name = obj2["name"];
       int32_t id = obj2["id"];
       std::string type = obj2["type"];
-      CoreCharacterStyle style = {name, id, type};
+      CoreCharacterStyle style;
+      style.id = id;
+      style.name = name;
+      style.type = type;
       styles.emplace_back(style);
     }
     CoreCharacter character;
@@ -61,7 +64,10 @@ DeviceSupport CoreAdapter::supported_devices()
   bool cpu = json_obj["cpu"];
   bool cuda = json_obj["cuda"];
   bool dml = json_obj["dml"];
-  DeviceSupport device_support = {cpu, cuda, dml};
+  DeviceSupport device_support;
+  device_support.cpu = cpu;
+  device_support.cuda = cuda;
+  device_support.dml = dml;
   return device_support;
 }
 

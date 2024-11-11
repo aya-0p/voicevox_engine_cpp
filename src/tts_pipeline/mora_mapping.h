@@ -50,4 +50,5 @@ extern std::vector<std::tuple<std::string, std::string, std::string>> mora_list_
 extern std::map<std::string, std::string> mora_phonemes_to_mora_kana;
 extern std::map<std::string, std::pair<std::string, std::string>> mora_kana_to_mora_phonemes;
 
+void init_mora_mapping();
 #endif

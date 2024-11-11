@@ -4,6 +4,7 @@
 #include "./model.h"
 #include "./kana_converter.h"
 #include "./mora_mapping.h"
+#include "iostream"
 
 int32_t LoopLimit = 300;
 
@@ -85,11 +86,13 @@ std::vector<std::string> split_string_kana(std::string const &text)
   return data;
 }
 
-std::map<std::string, Mora> kana2mora;
-int32_t init_kana_converter()
+std::map<std::string, Mora> kana2mora = std::map<std::string, Mora>();
+void init_kana_converter()
 {
+  init_mora_mapping();
   if (kana2mora.size() == 0)
   {
+    std::cout << mora_kana_to_mora_phonemes.size() << std::endl;
     for (auto &&[kana, value] : mora_kana_to_mora_phonemes)
     {
       auto [consonant, vowel] = value;
@@ -106,9 +109,7 @@ int32_t init_kana_converter()
         kana2mora.emplace(UnvoiceSymbol + kana, Mora{kana, consonant, static_cast<float>(consonant.empty() ? -1 : 0), "O", 0, 0});
     }
   }
-  return 0;
 }
-int32_t _kana_converter = init_kana_converter();
 
 AccentPhrase text_to_accent_phrase(std::vector<std::string> *phrase)
 {

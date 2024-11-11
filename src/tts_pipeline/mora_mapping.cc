@@ -375,10 +375,10 @@ std::vector<std::tuple<std::string, std::string, std::string>> mora_list_additio
     {"ィ", "", "i"},
     {"ァ", "", "a"},
 };
-std::map<std::string, std::string> mora_phonemes_to_mora_kana;
-std::map<std::string, std::pair<std::string, std::string>> mora_kana_to_mora_phonemes;
+std::map<std::string, std::string> mora_phonemes_to_mora_kana = std::map<std::string, std::string>();
+std::map<std::string, std::pair<std::string, std::string>> mora_kana_to_mora_phonemes = std::map<std::string, std::pair<std::string, std::string>>();
 
-int32_t init_mora_mapping()
+void init_mora_mapping()
 {
   if (mora_phonemes_to_mora_kana.size() == 0)
   {
@@ -394,6 +394,4 @@ int32_t init_mora_mapping()
       mora_kana_to_mora_phonemes.emplace(kana, std::pair(consonant, vowel));
     }
   }
-  return 0;
 }
-int32_t _mora_mapping = init_mora_mapping();
