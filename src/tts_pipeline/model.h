@@ -4,6 +4,7 @@
 #include <vector>
 #include <cstdint>
 #include "../defines.h"
+#include "../metas/metas.h"
 
 typedef struct Mora
 {

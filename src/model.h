@@ -1,8 +1,8 @@
-#ifndef VOICEVOX_ENGINE_UTILITY_MODEL
-#define VOICEVOX_ENGINE_UTILITY_MODEL
+#ifndef VOICEVOX_ENGINE_MODEL
+#define VOICEVOX_ENGINE_
 #include <vector>
 #include <string>
-#include "../tts_pipeline/model.h"
+#include "./tts_pipeline/model.h"
 #include <cstdint>
 
 typedef struct AudioQuery
@@ -23,4 +23,5 @@ typedef struct AudioQuery
   std::string kana;
 } AudioQuery;
 AudioQuery copy_audio_query(AudioQuery *audio_query);
+std::string create_audio_query_json(AudioQuery *audio_query);
 #endif

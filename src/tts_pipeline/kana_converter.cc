@@ -92,7 +92,6 @@ void init_kana_converter()
   init_mora_mapping();
   if (kana2mora.size() == 0)
   {
-    std::cout << mora_kana_to_mora_phonemes.size() << std::endl;
     for (auto &&[kana, value] : mora_kana_to_mora_phonemes)
     {
       auto [consonant, vowel] = value;

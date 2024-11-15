@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "../defines.h"
+#include "../metas/metas.h"
 
 #ifdef _WIN32
 #define DLL HMODULE

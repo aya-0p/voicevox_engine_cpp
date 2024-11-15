@@ -5,6 +5,7 @@
 #include "./model.h"
 #include "./text_analyzer.h"
 #include "./mora_mapping.h"
+#include "../open_jtalk/main.h"
 
 std::vector<std::string> OjtVowel = {"A", "E", "I", "N", "O", "U", "a", "cl", "e", "i", "o", "pau", "sil", "u"};
 std::vector<std::string> OjtConsonant = {
@@ -428,7 +429,7 @@ std::vector<AccentPhrase> text_to_accent_phrases(std::string const &text)
   // textの空白を取り除く
   if (copy_text.size() == 0)
     return std::vector<AccentPhrase>();
-  std::vector<std::string> features; // = text_to_features(copy_text);
+  std::vector<std::string> features = text_to_features(copy_text);
   std::vector<Label> labels;
   for (size_t i = 0; i < features.size(); i++)
   {

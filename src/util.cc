@@ -5,10 +5,14 @@
 #include "./util.h"
 #include <filesystem>
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
+
 void vec2arr(std::vector<int64_t> *vec, int64_t first, int64_t last, int64_t *arr)
 {
   arr[0] = first;
-  for (size_t i = 0; i < vec->size() + 2; i++)
+  for (size_t i = 0; i < vec->size(); i++)
   {
     arr[i + 1] = (*vec)[i];
   }
@@ -38,7 +42,7 @@ std::vector<int64_t> arr2vec(int64_t *arr, int64_t size)
 void vec2arr(std::vector<float> *vec, float first, float last, float *arr)
 {
   arr[0] = first;
-  for (size_t i = 0; i < vec->size() + 2; i++)
+  for (size_t i = 0; i < vec->size(); i++)
   {
     arr[i + 1] = (*vec)[i];
   }
@@ -65,6 +69,17 @@ std::vector<float> arr2vec(float *arr, int64_t size)
   return vec;
 }
 
+std::filesystem::path get_home_dir()
+{
+  const char *homedir;
+
+  if ((homedir = getenv("HOME")) == NULL)
+  {
+    homedir = getpwuid(getuid())->pw_dir;
+  }
+  return std::filesystem::path(homedir);
+}
+
 std::string platform_system()
 {
 #ifdef _WIN32
@@ -80,11 +95,7 @@ std::string platform_system()
 
 std::string get_env(std::string const &name)
 {
-#ifdef _WIN32
   return std::string(getenv(name.c_str()));
-#else
-  return std::string(std::getenv(name.c_str()));
-#endif
 }
 
 std::string user_data_dir(std::string const &appname)
@@ -92,12 +103,12 @@ std::string user_data_dir(std::string const &appname)
 #ifdef _WIN32
   return "Windows";
   char *path = reinterpret_cast<char *>(calloc(256, 1));
-  SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, path);;
+  SHGetKnownFolderPath(FOLDERID_LocalAppData, 0, NULL, path);
   return std::string(std::filesystem::path(path) / appname);
 #elif __MACH__
-  return std::string(std::filesystem::path("~/Library/Application Support") / appname);
+  return std::string(get_home_dir() / "Library/Application Support" / appname);
 #else
-  return std::string(std::filesystem::path("~/.local/share") / appname);
+  return std::string(get_home_dir() / ".local/share" / appname);
 #endif
 }
 
@@ -166,7 +177,8 @@ bool vector_has(std::vector<std::string> *vec, std::string const &data)
 {
   for (auto &&ve : *vec)
   {
-    if (data == ve) return true;
+    if (data == ve)
+      return true;
   }
   return false;
 }

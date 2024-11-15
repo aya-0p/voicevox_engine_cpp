@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include "./core_wrapper.h"
-#include "../defines.h"
+#include "../metas/metas.h"
 
 typedef struct CoreCharacterStyle
 {

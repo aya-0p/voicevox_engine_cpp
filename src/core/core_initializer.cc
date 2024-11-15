@@ -98,7 +98,7 @@ CoreManager initialize_cores(bool use_gpu, std::vector<std::string> *voicelib_di
           core_manager.register_core(core_adapter, core_version);
         }
       }
-      catch (const std::exception &e)
+      catch (const std::string &e)
       {
         if (!suppress_error)
           throw e;

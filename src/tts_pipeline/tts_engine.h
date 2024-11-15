@@ -10,8 +10,8 @@
 #include "../core/core_initializer.h"
 #include "./phoneme.h"
 #include "./model.h"
-#include "../utility/model.h"
 #include "../libraries/AudioFile.h"
+#include "../model.h"
 
 std::vector<Mora> to_flatten_moras(std::vector<AccentPhrase> *accent_phrases);
 std::vector<Phoneme> to_flatten_phonemes(std::vector<Mora> *moras);

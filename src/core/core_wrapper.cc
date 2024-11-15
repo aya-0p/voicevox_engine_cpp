@@ -5,6 +5,7 @@
 #include <cstdint>
 #include "../defines.h"
 #include "../util.h"
+#include "../metas/metas.h"
 #include "./core_wrapper.h"
 
 #ifdef _WIN32
@@ -26,13 +27,11 @@ T load_func(DLL &dll, const char *func_name)
 {
   if (dll == NULL)
   {
-    std::cout << "dll_not_found" << std::endl;
     throw "dll_not_loaded";
   }
   void *fn = GetProcAddress(dll, func_name);
   if (fn == NULL)
   {
-    std::cout << "fn_not_found" << std::endl;
     throw "fn_not_found";
   }
   return reinterpret_cast<T>(fn);
@@ -43,19 +42,18 @@ T load_func(DLL &dll, const char *func_name)
 #define DLL void *
 #endif
 
-DLL load_core_dll(std::string const &core_dll_path)
+std::string load_core_dll(std::string const &core_dll_path, DLL *dll)
 {
-  DLL dll;
 #ifdef _WIN32
-  dll = LoadLibraryA(path);
-  if (dll == NULL)
-    throw GetLastError();
+  *dll = LoadLibraryA(path);
+  if (*dll == NULL)
+    return std::string(GetLastError());
 #else
-  dll = dlopen(core_dll_path.c_str(), RTLD_NOW);
-  if (dll == NULL)
-    throw dlerror();
+  *dll = dlopen(core_dll_path.c_str(), RTLD_NOW);
+  if (*dll == NULL)
+    return std::string(dlerror());
 #endif
-  return dll;
+  return std::string();
 }
 void load_dll(std::string const &dll_path)
 {
@@ -262,70 +260,63 @@ DLL load_core(std::string const &core_dir, bool use_gpu)
   std::string core_name = find_version_0_12_core_or_later(core_dir);
   if (!core_name.empty())
   {
-    return load_core_dll(std::filesystem::path(core_dir) / core_name);
+    DLL dll;
+    std::string result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
+    if (result != "")
+      throw result;
+    return dll;
   }
   std::string model_type = check_core_type(core_dir);
   if (!model_type.empty())
     throw "コアが見つかりません";
+  DLL dll;
+  std::string result;
   if (use_gpu || model_type == "onnxruntime")
   {
     core_name = get_suitable_core_name(model_type, GPUType::CUDA);
-    try
-    {
-      return load_core_dll(std::filesystem::path(core_dir) / core_name);
-    }
-    catch (const std::exception &e)
-    {
-      core_name = get_suitable_core_name(model_type, GPUType::DIRECT_ML);
-      try
-      {
-        return load_core_dll(std::filesystem::path(core_dir) / core_name);
-      }
-      catch (const std::exception &e)
-      {
-      }
-    }
+    result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
+    if (result != "")
+      return dll;
+    core_name = get_suitable_core_name(model_type, GPUType::DIRECT_ML);
+    result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
+    if (result != "")
+      return dll;
   }
   core_name = get_suitable_core_name(model_type, GPUType::NONE);
   if (!core_name.empty())
   {
-    try
+    result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
+    if (result != "")
+      return dll;
+    if (model_type == "libtorch")
     {
-      return load_core_dll(std::filesystem::path(core_dir) / core_name);
-    }
-    catch (const std::exception &e)
-    {
-      if (model_type == "libtorch")
+      core_name = get_suitable_core_name(model_type, GPUType::CUDA);
+      if (!core_name.empty())
       {
-        core_name = get_suitable_core_name(model_type, GPUType::CUDA);
-        if (!core_name.empty())
-        {
-          try
-          {
-            return load_core_dll(std::filesystem::path(core_dir) / core_name);
-          }
-          catch (const std::exception &e)
-          {
-          }
-        }
+        result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
+        if (result != "")
+          return dll;
       }
-      throw "コアの読み込みに失敗しました";
     }
+    throw "コアの読み込みに失敗しました";
   }
+  else
+  {
 #ifdef _WIN32
-  throw "このコンピュータのアーキテクチャ" + get_arch_name() + "で利用可能なコアがありません";
+    throw "このコンピュータのアーキテクチャ" + get_arch_name() + "で利用可能なコアがありません";
 #else
-  utsname buf;
-  uname(&buf);
-  std::string machine = buf.machine;
-  throw "このコンピュータのアーキテクチャ" + machine + "で利用可能なコアがありません";
+    utsname buf;
+    uname(&buf);
+    std::string machine = buf.machine;
+    throw "このコンピュータのアーキテクチャ" + machine + "で利用可能なコアがありません";
 #endif
+  }
 }
 
 void CoreWrapper::initialize(bool use_gpu, std::string const &core_path, uint32_t cpu_num_threads, bool load_all_models)
 {
   this->default_sampling_rate = 24000;
-  this->core = load_core_dll(core_path);
+  this->core = load_core(core_path, use_gpu);
   assert_core_success(load_func<bool (*)(bool, int32_t, bool)>(this->core, "initialize")(use_gpu, cpu_num_threads, load_all_models));
 }
 

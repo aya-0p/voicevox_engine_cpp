@@ -1,0 +1,7 @@
+#ifndef VOICEVOX_ENGINE_USER_DICT_MANAGER
+#define VOICEVOX_ENGINE_USER_DICT_MANAGER
+#include <string>
+
+
+
+#endif

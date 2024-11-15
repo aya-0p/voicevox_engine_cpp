@@ -647,11 +647,11 @@ TTSEngine TTSEngineManager::get_engine(std::string const &version)
   return this->engines.at(version);
 }
 
-TTSEngineManager make_tts_engines_from_cores(CoreManager &core_manager)
+TTSEngineManager make_tts_engines_from_cores(CoreManager *core_manager)
 {
   const std::string MockVer = "0.0.0";
   TTSEngineManager tts_engines;
-  for (auto &&[ver, core] : core_manager.items())
+  for (auto &&[ver, core] : core_manager->items())
   {
     if (ver == MockVer)
       ;
