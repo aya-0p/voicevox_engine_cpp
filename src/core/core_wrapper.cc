@@ -83,8 +83,8 @@ T load_func(DLL dll, const char *func_name)
 
 void load_runtime_lib(std::vector<std::string> *runtime_dirs)
 {
-  std::vector<std::filesystem::path> lib_file_names;
-  std::vector<std::filesystem::path> lib_names;
+  std::vector<std::filesystem::path> lib_file_names = std::vector<std::filesystem::path>();
+  std::vector<std::filesystem::path> lib_names = std::vector<std::filesystem::path>();
 #ifdef _WIN32
   lib_file_names.emplace_back(std::filesystem::path("torch_cpu.dll"));
   lib_file_names.emplace_back(std::filesystem::path("torch_cuda.dll"));
@@ -188,7 +188,7 @@ std::string get_core_name(std::string const &arch_name, std::string const &platf
       return std::string();
     }
   }
-  std::vector<CoreInfo> core_infos;
+  std::vector<CoreInfo> core_infos = std::vector<CoreInfo>();
   if (true) // core_infos
   {
     core_infos.emplace_back(CoreInfo{std::string("core.dll"), std::string("Windows"), std::string("x64"), std::string("libtorch"), GPUType::CUDA});
@@ -235,10 +235,10 @@ std::string get_suitable_core_name(std::string const &model_type, GPUType gpu_ty
 
 std::string check_core_type(std::string const &core_dir)
 {
-  std::vector<std::string> libtorch_core_names;
+  std::vector<std::string> libtorch_core_names = std::vector<std::string>();
   libtorch_core_names.emplace_back(get_suitable_core_name("libtorch", GPUType::CUDA));
   libtorch_core_names.emplace_back(get_suitable_core_name("libtorch", GPUType::NONE));
-  std::vector<std::string> onnxruntime_core_names;
+  std::vector<std::string> onnxruntime_core_names = std::vector<std::string>();
   onnxruntime_core_names.emplace_back(get_suitable_core_name("onnxruntime", GPUType::CUDA));
   onnxruntime_core_names.emplace_back(get_suitable_core_name("onnxruntime", GPUType::DIRECT_ML));
   onnxruntime_core_names.emplace_back(get_suitable_core_name("onnxruntime", GPUType::NONE));

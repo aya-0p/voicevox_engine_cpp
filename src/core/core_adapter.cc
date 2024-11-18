@@ -20,7 +20,7 @@ bool CoreAdapter::is_initialized() const
 
 std::vector<CoreCharacter> CoreAdapter::characters()
 {
-  std::vector<CoreCharacter> characters;
+  std::vector<CoreCharacter> characters = std::vector<CoreCharacter>();
   const char *json_text = this->core->metas();
   json json_obj = json::parse(json_text);
   for (size_t i = 0; i < json_obj.size(); i++)
@@ -93,7 +93,7 @@ std::vector<float> CoreAdapter::safe_yukarin_s_forward(std::vector<int64_t> *pho
   vec2arr(phoneme_list, (int64_t)0, (int64_t)0, phoneme_list_data);
   float *output = reinterpret_cast<float *>(calloc(length, sizeof(float)));
   bool result = this->core->yukarin_s_forward(length, phoneme_list_data, &style_id, output);
-  std::vector<float> output_data;
+  std::vector<float> output_data = std::vector<float>();
   free(phoneme_list_data);
   if (result == true)
   {
@@ -121,7 +121,7 @@ std::vector<float> CoreAdapter::safe_yukarin_sa_forward(std::vector<int64_t> *vo
   vec2arr(end_accent_phrase, int64_t(0), int64_t(0), end_accent_phrase_data);
   float *output = reinterpret_cast<float *>(calloc(length, sizeof(float)));
   bool result = this->core->yukarin_sa_forward(length, vowel_phoneme_list_data, consonant_phoneme_list_data, start_accent_list_data, end_accent_list_data, start_accent_phrase_data, end_accent_phrase_data, &style_id, output);
-  std::vector<float> output_data;
+  std::vector<float> output_data = std::vector<float>();
   free(vowel_phoneme_list_data);
   free(consonant_phoneme_list_data);
   free(start_accent_list_data);
@@ -153,7 +153,7 @@ std::pair<std::vector<std::vector<float>>, int32_t> CoreAdapter::safe_decode_for
   }
   float *output = reinterpret_cast<float *>(calloc(length * 256, sizeof(float)));
   bool result = this->core->decode_forward(length, phoneme_size, f0_data, phoneme_data, &style_id, output);
-  std::vector<std::vector<float>> output_data;
+  std::vector<std::vector<float>> output_data = std::vector<std::vector<float>>();
   free(f0_data);
   free(phoneme_data);
   if (result == true)
@@ -176,7 +176,7 @@ std::vector<int64_t> CoreAdapter::safe_predict_sing_consonant_length_forward(std
   vec2arr(note_duration, note_duration_data);
   int64_t *output = reinterpret_cast<int64_t *>(calloc(length, sizeof(int64_t)));
   bool result = this->core->predict_sing_consonant_length_forward(length, consonant_data, vowel_data, note_duration_data, &style_id, output);
-  std::vector<int64_t> output_data;
+  std::vector<int64_t> output_data = std::vector<int64_t>();
   free(consonant_data);
   free(vowel_data);
   free(note_duration_data);
@@ -197,7 +197,7 @@ std::vector<float> CoreAdapter::safe_predict_sing_f0_forward(std::vector<int64_t
   vec2arr(note, note_data);
   float *output = reinterpret_cast<float *>(calloc(length, sizeof(float)));
   bool result = this->core->predict_sing_f0_forward(length, phoneme_data, note_data, &style_id, output);
-  std::vector<float> output_data;
+  std::vector<float> output_data = std::vector<float>();
   free(phoneme_data);
   free(note_data);
   if (result == true)
@@ -219,7 +219,7 @@ std::vector<float> CoreAdapter::safe_predict_sing_volume_forward(std::vector<int
   vec2arr(f0, f0_data);
   float *output = reinterpret_cast<float *>(calloc(length, sizeof(float)));
   bool result = this->core->predict_sing_volume_forward(length, phoneme_data, note_data, f0_data, &style_id, output);
-  std::vector<float> output_data;
+  std::vector<float> output_data = std::vector<float>();
   free(phoneme_data);
   free(note_data);
   free(f0_data);
@@ -242,7 +242,7 @@ std::pair<std::vector<std::vector<float>>, int32_t> CoreAdapter::safe_sf_decode_
   vec2arr(volume, volume_data);
   float *output = reinterpret_cast<float *>(calloc(length * 256, sizeof(float)));
   bool result = this->core->sf_decode_forward(length, phoneme_data, f0_data, volume_data, &style_id, output);
-  std::vector<std::vector<float>> output_data;
+  std::vector<std::vector<float>> output_data = std::vector<std::vector<float>>();
   free(phoneme_data);
   free(f0_data);
   free(volume_data);

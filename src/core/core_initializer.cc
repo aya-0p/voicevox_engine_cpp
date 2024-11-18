@@ -11,18 +11,20 @@ using json = nlohmann::json;
 
 std::vector<std::string> CoreManager::versions() const
 {
-  std::vector<std::string> keys;
-  for (auto &&core : cores)
+  std::vector<std::string> keys = std::vector<std::string>(this->cores.size(), "");
+  size_t i = 0;
+  for (auto &&[core_name, _] : this->cores)
   {
-    keys.emplace_back(std::string(core.first));
+    keys[i] = std::string(core_name);
+    i++;
   }
   return keys;
 }
 
 std::string CoreManager::latest_version() const
 {
-  std::vector<std::string> versions = this->versions();
-  return get_latest_version(&versions);
+  std::vector<std::string> temp = std::vector<std::string>(this->versions());
+  return get_latest_version(&temp);
 }
 
 void CoreManager::register_core(CoreAdapter &core, std::string const &version)
@@ -42,10 +44,12 @@ bool CoreManager::has_core(std::string const &version) const
 
 std::vector<std::pair<std::string, CoreAdapter>> CoreManager::items()
 {
-  std::vector<std::pair<std::string, CoreAdapter>> items;
-  for (auto &&core : cores)
+  std::vector<std::pair<std::string, CoreAdapter>> items = std::vector<std::pair<std::string, CoreAdapter>>(this->cores.size());
+  size_t i = 0;
+  for (auto &&[k, v] : cores)
   {
-    items.emplace_back(std::string(core.first), core.second);
+    items[i] = std::pair(std::string(k), v);
+    i++;
   }
   return items;
 }
@@ -108,7 +112,7 @@ CoreManager initialize_cores(bool use_gpu, std::vector<std::string> *voicelib_di
     {
       load_core_library(voicelib_dir, false);
     }
-    std::vector<std::string> user_voicelib_dirs;
+    std::vector<std::string> user_voicelib_dirs = std::vector<std::string>();
     std::filesystem::path core_libraries_dir = std::filesystem::path(get_save_dir()) / "core_libraries";
     std::error_code e;
     std::filesystem::create_directories(core_libraries_dir, e);

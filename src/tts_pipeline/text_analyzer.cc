@@ -5,7 +5,7 @@
 #include "./model.h"
 #include "./text_analyzer.h"
 #include "./mora_mapping.h"
-#include "../open_jtalk/main.h"
+#include "../open_jtalk/open_jtalk.h"
 
 std::vector<std::string> OjtVowel = {"A", "E", "I", "N", "O", "U", "a", "cl", "e", "i", "o", "pau", "sil", "u"};
 std::vector<std::string> OjtConsonant = {
@@ -271,6 +271,7 @@ BreathGroupLabel BreathGroupLabel::from_labels(std::vector<Label> const &labels)
   {
     Label label = labels[i];
     Label next_label = i == labels.size() - 1 ? Label() : labels[i + 1];
+    accent_labels.emplace_back(label);
     if (!next_label.is_valid() || label.breath_group_index() != next_label.breath_group_index() || label.accent_phrase_index() != next_label.accent_phrase_index())
     {
       AccentPhraseLabel accent_phrase = AccentPhraseLabel::from_labels(accent_labels);

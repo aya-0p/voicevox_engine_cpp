@@ -14,7 +14,32 @@ std::string get_resource_baseurl(httplib::Request *request)
 
 std::vector<Speaker> characters_to_speakers(std::vector<Character> *characters)
 {
-  std::vector<Speaker> speakers;
+  std::vector<Speaker> speakers = std::vector<Speaker>(characters->size(), Speaker());
+  for (size_t i = 0; i < characters->size(); i++)
+  {
+    Character character = (*characters)[i];
+    speakers[i].name = std::string(character.name);
+    speakers[i].speaker_uuid = std::string(character.uuid);
+    for (auto &&s : *character.talk_styles)
+    {
+      SpeakerStyle style;
+      style.id = s.id;
+      style.name = std::string(s.name);
+      style.type = std::string(s.type);
+      speakers[i].styles->emplace_back(style);
+    }
+    for (auto &&s : *character.sing_styles)
+    {
+      SpeakerStyle style;
+      style.id = s.id;
+      style.name = std::string(s.name);
+      style.type = std::string(s.type);
+      speakers[i].styles->emplace_back(style);
+    }
+    speakers[i].version = std::string(character.version);
+    speakers[i].supported_features->permitted_synthesis_morphing = std::string(character.supported_features->permitted_synthesis_morphing);
+  }
+  
   for (auto &&character : *characters)
   {
     Speaker speaker;

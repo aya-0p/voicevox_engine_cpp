@@ -28,6 +28,22 @@ std::vector<Mora> to_flatten_moras(std::vector<AccentPhrase> *accent_phrases)
   return moras;
 }
 
+std::vector<Mora*> to_flatten_moras_pointer(std::vector<AccentPhrase> *accent_phrases)
+{
+  std::vector<Mora*> moras;
+  
+  for (auto &&accent_phrase : *accent_phrases)
+  {
+    for (size_t i = 0; i < accent_phrase.moras->size(); i++)
+    {
+      moras.emplace_back(&(*accent_phrase.moras)[i]);
+    }
+    if (accent_phrase.pause_mora != nullptr)
+      moras.emplace_back(accent_phrase.pause_mora);
+  }
+  return moras;
+}
+
 std::vector<Phoneme> to_flatten_phonemes(std::vector<Mora> *moras)
 {
   std::vector<Phoneme> phonemes;
@@ -46,9 +62,28 @@ std::vector<Phoneme> to_flatten_phonemes(std::vector<Mora> *moras)
   return phonemes;
 }
 
+std::vector<Phoneme> to_flatten_phonemes(std::vector<Mora*> *moras)
+{
+  std::vector<Phoneme> phonemes;
+  for (auto &&mora : *moras)
+  {
+    if (!mora->consonant.empty())
+    {
+      Phoneme phoneme;
+      phoneme.initialize(mora->consonant);
+      phonemes.emplace_back(phoneme);
+    }
+    Phoneme phoneme;
+    phoneme.initialize(mora->vowel);
+    phonemes.emplace_back(phoneme);
+  }
+  return phonemes;
+}
+
 std::vector<int64_t> create_one_hot(AccentPhrase *accent_phrase, int32_t index)
 {
   std::vector<int64_t> onehot(accent_phrase->moras->size(), 0);
+  if (index < 0) index = onehot.size() + index;
   onehot[index] = 1;
   if (accent_phrase->pause_mora != nullptr)
     onehot.emplace_back(0);
@@ -420,7 +455,7 @@ void TTSEngine::initialize(CoreWrapper *core)
 
 std::vector<AccentPhrase> TTSEngine::update_length(std::vector<AccentPhrase> *accent_phrases, StyleId style_id)
 {
-  std::vector<Mora> moras = to_flatten_moras(accent_phrases);
+  std::vector<Mora*> moras = to_flatten_moras_pointer(accent_phrases);
   std::vector<Phoneme> phonemes = to_flatten_phonemes(&moras);
   std::vector<int64_t> phoneme_ids = std::vector<int64_t>(phonemes.size(), 0);
   for (size_t i = 0; i < phonemes.size(); i++)
@@ -437,11 +472,11 @@ std::vector<AccentPhrase> TTSEngine::update_length(std::vector<AccentPhrase> *ac
   }
   for (size_t i = 0; i < moras.size(); i++)
   {
-    if (moras[i].consonant == "")
-      moras[i].consonant_length = 0;
+    if (moras[i]->consonant == "")
+      moras[i]->consonant_length = 0;
     else
-      moras[i].consonant_length = phoneme_lengths[vowel_indexes[i] - 1];
-    moras[i].vowel_length = phoneme_lengths[vowel_indexes[i]];
+      moras[i]->consonant_length = phoneme_lengths[vowel_indexes[i] - 1];
+    moras[i]->vowel_length = phoneme_lengths[vowel_indexes[i]];
   }
   return *accent_phrases;
 }
@@ -474,17 +509,17 @@ std::vector<AccentPhrase> TTSEngine::update_pitch(std::vector<AccentPhrase> *acc
     one_hots_temp_4.emplace_back(create_one_hot(&accent_phrase, -1));
   }
   std::vector<int64_t> end_accent_phrase_list = numpy_concatenate(&one_hots_temp_4);
-  std::vector<Mora> moras = to_flatten_moras(accent_phrases);
+  std::vector<Mora*> moras = to_flatten_moras_pointer(accent_phrases);
   std::vector<int64_t> consonant_ids;
   for (auto &&mora : moras)
   {
-    consonant_ids.emplace_back(mora.consonant.empty() ? -1 : Phoneme::id(mora.consonant));
+    consonant_ids.emplace_back(mora->consonant.empty() ? -1 : Phoneme::id(mora->consonant));
   }
   std::vector<Phoneme> vowels;
   for (auto &&mora : moras)
   {
     Phoneme phoneme;
-    phoneme.initialize(mora.vowel);
+    phoneme.initialize(mora->vowel);
     vowels.emplace_back(phoneme);
   }
   std::vector<int64_t> vowel_ids;
@@ -507,7 +542,7 @@ std::vector<AccentPhrase> TTSEngine::update_pitch(std::vector<AccentPhrase> *acc
   }
   for (size_t i = 0; i < moras.size(); i++)
   {
-    moras[i].pitch = f0[i];
+    moras[i]->pitch = f0[i];
   }
   return *accent_phrases;
 }

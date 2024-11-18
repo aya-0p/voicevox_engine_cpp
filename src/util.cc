@@ -31,7 +31,7 @@ void vec2arr(std::vector<int64_t> *vec, int64_t *arr)
 
 std::vector<int64_t> arr2vec(int64_t *arr, int64_t size)
 {
-  std::vector<int64_t> vec(size);
+  std::vector<int64_t> vec(size, 0);
   for (size_t i = 0; i < vec.size(); i++)
   {
     vec[i] = arr[i];
@@ -61,7 +61,7 @@ void vec2arr(std::vector<float> *vec, float *arr)
 
 std::vector<float> arr2vec(float *arr, int64_t size)
 {
-  std::vector<float> vec(size);
+  std::vector<float> vec(size, 0.0f);
   for (size_t i = 0; i < vec.size(); i++)
   {
     vec[i] = arr[i];
@@ -121,13 +121,13 @@ std::vector<std::vector<float>> numpy_repeat(std::vector<std::vector<float>> *a,
     size += (*repeats)[i];
   }
   std::vector<std::vector<float>> vec = std::vector<std::vector<float>>(size, std::vector<float>());
-  size = 0;
+  size_t t = 0;
   for (size_t i = 0; i < length; i++)
   {
     for (size_t j = 0; j < (*repeats)[i]; j++)
     {
-      vec[size] = (*a)[i];
-      size++;
+      vec[t] = std::vector<float>((*a)[i]);
+      t++;
     }
   }
   return vec;
@@ -140,14 +140,14 @@ std::vector<float> numpy_repeat(std::vector<float> *a, std::vector<int64_t> *rep
   {
     size += (*repeats)[i];
   }
-  std::vector<float> vec = std::vector<float>(size, 0);
-  size = 0;
+  std::vector<float> vec = std::vector<float>(size, 0.0f);
+  size_t t = 0;
   for (size_t i = 0; i < length; i++)
   {
     for (size_t j = 0; j < (*repeats)[i]; j++)
     {
-      vec[size] = (*a)[i];
-      size++;
+      vec[t] = (*a)[i];
+      t++;
     }
   }
   return vec;
@@ -161,13 +161,13 @@ std::vector<int64_t> numpy_repeat(std::vector<int64_t> *a, std::vector<int64_t> 
     size += (*repeats)[i];
   }
   std::vector<int64_t> vec = std::vector<int64_t>(size, 0);
-  size = 0;
+  size_t t = 0;
   for (size_t i = 0; i < length; i++)
   {
     for (size_t j = 0; j < (*repeats)[i]; j++)
     {
-      vec[size] = (*a)[i];
-      size++;
+      vec[t] = (*a)[i];
+      t++;
     }
   }
   return vec;
@@ -184,7 +184,7 @@ bool vector_has(std::vector<std::string> *vec, std::string const &data)
 }
 std::vector<std::string> copy_strings(std::vector<std::string> *vec)
 {
-  std::vector<std::string> vec_new(vec->size());
+  std::vector<std::string> vec_new = std::vector<std::string>(vec->size(), "");
   for (size_t i = 0; i < vec->size(); i++)
   {
     vec_new[i] = std::string((*vec)[i]);
@@ -194,12 +194,20 @@ std::vector<std::string> copy_strings(std::vector<std::string> *vec)
 
 std::vector<int64_t> numpy_concatenate(std::vector<std::vector<int64_t>> *arrays)
 {
-  std::vector<int64_t> vec;
+  size_t length = 0;
+  for (auto &&arr : *arrays)
+  {
+    length += arr.size();
+  }
+
+  std::vector<int64_t> vec = std::vector<int64_t>(length, 0);
+  size_t i = 0;
   for (auto &&t_vec_1 : *arrays)
   {
     for (auto &&t_vec_2 : t_vec_1)
     {
-      vec.emplace_back(t_vec_2);
+      vec[i] = t_vec_2;
+      i++;
     }
   }
   return vec;

@@ -41,7 +41,7 @@ std::string create_mora_json(Mora *mora)
   mora_text += mora->vowel;
   mora_text += "\",\"vowel_length\":";
   mora_text += std::to_string(mora->vowel_length);
-  mora_text += "\",\"pitch\":";
+  mora_text += ",\"pitch\":";
   mora_text += std::to_string(mora->pitch);
   mora_text += "}";
   return mora_text;
@@ -50,7 +50,6 @@ std::string create_mora_json(Mora *mora)
 std::string create_accent_phrase_json(AccentPhrase *accent_phrase)
 {
   std::string accent_phrase_text = "{";
-  accent_phrase_text += "{";
   accent_phrase_text += "\"moras\":[";
   for (size_t i = 0; i < accent_phrase->moras->size(); i++)
   {
