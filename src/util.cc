@@ -212,3 +212,13 @@ std::vector<int64_t> numpy_concatenate(std::vector<std::vector<int64_t>> *arrays
   }
   return vec;
 }
+
+std::vector<float> drop_edge(std::vector<float> *vec)
+{
+  std::vector<float> new_vec = std::vector<float>(vec->size() - 2, 0.0f);
+  for (size_t i = 0; i < vec->size() - 2; i++)
+  {
+    new_vec[i] = (*vec)[i + 1];
+  }
+  return new_vec;
+}

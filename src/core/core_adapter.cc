@@ -100,7 +100,7 @@ std::vector<float> CoreAdapter::safe_yukarin_s_forward(std::vector<int64_t> *pho
     output_data = arr2vec(output, length);
   }
   free(output);
-  return output_data;
+  return drop_edge(&output_data);
 }
 
 std::vector<float> CoreAdapter::safe_yukarin_sa_forward(std::vector<int64_t> *vowel_phoneme_list, std::vector<int64_t> *consonant_phoneme_list, std::vector<int64_t> *start_accent_list, std::vector<int64_t> *end_accent_list, std::vector<int64_t> *start_accent_phrase, std::vector<int64_t> *end_accent_phrase, StyleId style_id)
@@ -133,7 +133,7 @@ std::vector<float> CoreAdapter::safe_yukarin_sa_forward(std::vector<int64_t> *vo
     output_data = arr2vec(output, length);
   }
   free(output);
-  return output_data;
+  return drop_edge(&output_data);
 }
 
 std::pair<std::vector<std::vector<float>>, int32_t> CoreAdapter::safe_decode_forward(std::vector<std::vector<float>> *phoneme, std::vector<float> *f0, StyleId style_id)

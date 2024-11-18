@@ -17,4 +17,5 @@ std::vector<int64_t> numpy_repeat(std::vector<int64_t> *a, std::vector<int64_t> 
 bool vector_has(std::vector<std::string> *vec, std::string const &data);
 std::vector<std::string> copy_strings(std::vector<std::string> *vec);
 std::vector<int64_t> numpy_concatenate(std::vector<std::vector<int64_t>> *a);
+std::vector<float> drop_edge(std::vector<float> *vec);
 #endif

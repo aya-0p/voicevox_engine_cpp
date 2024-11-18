@@ -239,7 +239,7 @@ std::string create_kana(std::vector<AccentPhrase> *accent_phrases)
     }
     if (i < accent_phrases->size() - 1)
     {
-      if (phrase.pause_mora->vowel_length == -1)
+      if (phrase.pause_mora == nullptr)
       {
         text += NopauseDelimiter;
       }

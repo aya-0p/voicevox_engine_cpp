@@ -4,67 +4,67 @@
 /* #undef AC_APPLE_UNIVERSAL_BUILD */
 
 /* Define to 1 if you have the <ctype.h> header file. */
-#define HAVE_CTYPE_H 1
+/* #undef HAVE_CTYPE_H */
 
 /* Define to 1 if you have the <dirent.h> header file. */
-#define HAVE_DIRENT_H 1
+/* #undef HAVE_DIRENT_H */
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #define HAVE_FCNTL_H 1
 
 /* Define to 1 if you have the `getenv' function. */
-#define HAVE_GETENV 1
+/* #undef HAVE_GETENV */
 
 /* Define to 1 if you have the `getpagesize' function. */
-#define HAVE_GETPAGESIZE 1
+/* #undef HAVE_GETPAGESIZE */
 
 /* Define to 1 if you have the `iconv_open' library(-liconv). */
 /* #undef HAVE_ICONV */
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#define HAVE_INTTYPES_H 1
+/* #undef HAVE_INTTYPES_H */
 
 /* Define to 1 if you have the <io.h> header file. */
 /* #undef HAVE_IO_H */
 
 /* Define to 1 if you have the `m' library (-lm). */
-#define HAVE_LIBM 1
+/* #undef HAVE_LIBM */
 
 /* Define to 1 if you have the `winmm' library (-lwinmm). */
 /* #undef HAVE_LIBWINMM */
 
 /* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
+/* #undef HAVE_MEMORY_H */
 
 /* Define to 1 if you have a working `mmap' system call. */
 #define HAVE_MMAP 1
 
 /* Define to 1 if you have the `opendir' function. */
-#define HAVE_OPENDIR 1
+/* #undef HAVE_OPENDIR */
 
 /* Define to 1 if you have the `setjmp' function. */
-#define HAVE_SETJMP 1
+/* #undef HAVE_SETJMP */
 
 /* Define to 1 if you have the <setjmp.h> header file. */
-#define HAVE_SETJMP_H 1
+/* #undef HAVE_SETJMP_H */
 
 /* Define to 1 if you have the `sqrt' function. */
-#define HAVE_SQRT 1
+/* #undef HAVE_SQRT */
 
 /* Define to 1 if you have the <stdint.h> header file. */
-#define HAVE_STDINT_H 1
+/* #undef HAVE_STDINT_H */
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#define HAVE_STDLIB_H 1
+/* #undef HAVE_STDLIB_H */
 
 /* Define to 1 if you have the <strings.h> header file. */
-#define HAVE_STRINGS_H 1
+/* #undef HAVE_STRINGS_H */
 
 /* Define to 1 if you have the <string.h> header file. */
-#define HAVE_STRING_H 1
+/* #undef HAVE_STRING_H */
 
 /* Define to 1 if you have the `strstr' function. */
-#define HAVE_STRSTR 1
+/* #undef HAVE_STRSTR */
 
 /* Define to 1 if you have the <sys/mman.h> header file. */
 #define HAVE_SYS_MMAN_H 1
@@ -76,7 +76,7 @@
 #define HAVE_SYS_STAT_H 1
 
 /* Define to 1 if you have the <sys/times.h> header file. */
-#define HAVE_SYS_TIMES_H 1
+/* #undef HAVE_SYS_TIMES_H */
 
 /* Define to 1 if you have the <sys/types.h> header file. */
 #define HAVE_SYS_TYPES_H 1
