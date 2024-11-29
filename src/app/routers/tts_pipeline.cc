@@ -54,4 +54,44 @@ void router_tts_pipeline(httplib::Server *server, TTSEngineManager *tts_engines)
     wave.save(temp_path, AudioFileFormat::Wave);
     res.set_file_content(temp_path, "audio/wav");
   });
+  server->Post("/sing_frame_audio_query", [tts_engines](const httplib::Request &req, httplib::Response &res) {
+    std::string version = req.has_param("core_version") ? req.get_param_value("core_version") : "";
+    std::string style_id = req.get_param_value("style_id");
+    if (style_id.empty())
+    {
+      res.set_content("", "text/plain");
+    }
+    else
+    {
+      std::string score_json = req.body;
+      Score score = parse_score_json(score_json);
+      TTSEngine engine = version.empty() ? tts_engines->get_engine() : tts_engines->get_engine(version);
+      try
+      {
+        auto [phonemes, f0, volume] = engine.create_sing_phoneme_and_f0_and_volume(&score, std::stoi(style_id));
+        FrameAudioQuery frame_audio_query;
+        for (auto &&f0_ : f0)
+        {
+          frame_audio_query.f0->emplace_back(f0_);
+        }
+        for (auto &&vol : volume)
+        {
+          frame_audio_query.volume->emplace_back(vol);
+        }
+        for (auto &&ph : phonemes)
+        {
+          frame_audio_query.phonemes->emplace_back(ph);
+        }
+        frame_audio_query.volumeScale = 1;
+        frame_audio_query.outputSamplingRate = engine.default_sampling_rate;
+        frame_audio_query.outputStereo = false;
+        std::string frame_audio_query_json = create_frame_audio_query_json(&frame_audio_query);
+      res.set_content(frame_audio_query_json, "application/json");
+      }
+      catch(const std::string& str)
+      {
+        res.set_content(str, "text/plain");
+      }
+    }
+  });
 }

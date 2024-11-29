@@ -119,6 +119,59 @@ std::string create_audio_query_json(AudioQuery *audio_query)
   return audio_query_text;
 }
 
+std::string create_frame_phoneme_json(FramePhoneme *frame_phoneme_json)
+{
+  std::string frame_phoneme = "{";
+  frame_phoneme += "\"phoneme\":\"";
+  frame_phoneme += frame_phoneme_json->phoneme;
+  frame_phoneme += "\",\"frame_length\":";
+  frame_phoneme += to_string(frame_phoneme_json->frame_length);
+  frame_phoneme += ",\"note_id\":";
+  if (frame_phoneme_json->note_id.empty())
+  {
+    frame_phoneme += "null";
+  }
+  else
+  {
+    frame_phoneme += "\"";
+    frame_phoneme += frame_phoneme_json->note_id;
+    frame_phoneme += "\"";
+  }
+  frame_phoneme += "}";
+  return frame_phoneme;
+}
+
+std::string create_frame_audio_query_json(FrameAudioQuery *frame_audio_query)
+{
+  std::string frame_audio_query_json = "{";
+  frame_audio_query_json += "\"f0\":[";
+  for (size_t i = 0; i < frame_audio_query->f0->size(); i++)
+  {
+    if (i > 0) frame_audio_query_json += ",";
+    frame_audio_query_json += to_string((*frame_audio_query->f0)[i]);
+  }
+  frame_audio_query_json += "],\"volume\":[";
+  for (size_t i = 0; i < frame_audio_query->volume->size(); i++)
+  {
+    if (i > 0) frame_audio_query_json += ",";
+    frame_audio_query_json += to_string((*frame_audio_query->volume)[i]);
+  }
+  frame_audio_query_json += "],\"phonemes\":[";
+  for (size_t i = 0; i < frame_audio_query->phonemes->size(); i++)
+  {
+    if (i > 0) frame_audio_query_json += ",";
+    frame_audio_query_json += create_frame_phoneme_json(&(*frame_audio_query->phonemes)[i]);
+  }
+  frame_audio_query_json += "],\"volumeScale\":";
+  frame_audio_query_json += to_string(frame_audio_query->volumeScale);
+  frame_audio_query_json += ",\"outputSamplingRate\":";
+  frame_audio_query_json += to_string(frame_audio_query->outputSamplingRate);
+  frame_audio_query_json += ",\"outputStereo\":";
+  frame_audio_query_json += to_string(frame_audio_query->outputStereo);
+  frame_audio_query_json += "}";
+  return frame_audio_query_json;
+}
+
 int32_t get_int32_from_json(json &j, std::string const &key, bool allow_null = false)
 {
   try
@@ -234,4 +287,31 @@ AudioQuery parse_audio_query_json(std::string const &audio_query_json_string)
 {
   json j = json::parse(audio_query_json_string);
   return parse_audio_query(j);
+}
+
+Note parse_note(json note_json)
+{
+  Note note;
+  note.id = get_string_from_json(note_json, "id", true);
+  note.key = get_int32_from_json(note_json, "key", true);
+  note.frame_length = get_int32_from_json(note_json, "frame_length");
+  note.lyric = get_string_from_json(note_json, "lyric");
+  return note;
+}
+
+Score parse_score(json score_json)
+{
+  Score score;
+  for (auto &&note_json : score_json["notes"])
+  {
+    Note note = parse_note(note_json);
+    score.notes->emplace_back(note);
+  }
+  return score;
+}
+
+Score parse_score_json(std::string const &score_json)
+{
+  json j = json::parse(score_json);
+  return parse_score(j);
 }
