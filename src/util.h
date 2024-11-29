@@ -18,4 +18,8 @@ bool vector_has(std::vector<std::string> *vec, std::string const &data);
 std::vector<std::string> copy_strings(std::vector<std::string> *vec);
 std::vector<int64_t> numpy_concatenate(std::vector<std::vector<int64_t>> *a);
 std::vector<float> drop_edge(std::vector<float> *vec);
+std::string to_string(float in);
+std::string to_string(int64_t in);
+std::string to_string(int32_t in);
+std::string to_string(bool in);
 #endif

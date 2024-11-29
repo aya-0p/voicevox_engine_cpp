@@ -228,7 +228,7 @@ std::string get_suitable_core_name(std::string const &model_type, GPUType gpu_ty
 {
   std::string arch_name = get_arch_name();
   std::string platform_name = platform_system();
-  if (arch_name == "")
+  if (arch_name.empty())
     return std::string();
   return get_core_name(arch_name, platform_name, model_type, gpu_type);
 }
@@ -244,12 +244,12 @@ std::string check_core_type(std::string const &core_dir)
   onnxruntime_core_names.emplace_back(get_suitable_core_name("onnxruntime", GPUType::NONE));
   for (auto &&name : libtorch_core_names)
   {
-    if (name != "" && std::filesystem::is_regular_file(std::filesystem::path(core_dir) / name))
+    if (!name.empty() && std::filesystem::is_regular_file(std::filesystem::path(core_dir) / name))
       return "libtorch";
   }
   for (auto &&name : onnxruntime_core_names)
   {
-    if (name != "" && std::filesystem::is_regular_file(std::filesystem::path(core_dir) / name))
+    if (!name.empty() && std::filesystem::is_regular_file(std::filesystem::path(core_dir) / name))
       return "onnxruntime";
   }
   return std::string();
@@ -262,7 +262,7 @@ DLL load_core(std::string const &core_dir, bool use_gpu)
   {
     DLL dll;
     std::string result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
-    if (result != "")
+    if (!result.empty())
       throw result;
     return dll;
   }
@@ -275,18 +275,18 @@ DLL load_core(std::string const &core_dir, bool use_gpu)
   {
     core_name = get_suitable_core_name(model_type, GPUType::CUDA);
     result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
-    if (result != "")
+    if (!result.empty())
       return dll;
     core_name = get_suitable_core_name(model_type, GPUType::DIRECT_ML);
     result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
-    if (result != "")
+    if (!result.empty())
       return dll;
   }
   core_name = get_suitable_core_name(model_type, GPUType::NONE);
   if (!core_name.empty())
   {
     result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
-    if (result != "")
+    if (!result.empty())
       return dll;
     if (model_type == "libtorch")
     {
@@ -294,7 +294,7 @@ DLL load_core(std::string const &core_dir, bool use_gpu)
       if (!core_name.empty())
       {
         result = load_core_dll(std::filesystem::path(core_dir) / core_name, &dll);
-        if (result != "")
+        if (!result.empty())
           return dll;
       }
     }

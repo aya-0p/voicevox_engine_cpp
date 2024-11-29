@@ -92,6 +92,7 @@ add_executable(
   src/utility/runtime_utility.cc
   # src/cancellable_engine.cc
   # src/engine_manifest.cc
+  src/json_parser.cc
   src/main.cc
   src/model.cc
   # src/resource_manager.cc

@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <pwd.h>
+#include <format>
 
 void vec2arr(std::vector<int64_t> *vec, int64_t first, int64_t last, int64_t *arr)
 {
@@ -221,4 +222,24 @@ std::vector<float> drop_edge(std::vector<float> *vec)
     new_vec[i] = (*vec)[i + 1];
   }
   return new_vec;
+}
+
+std::string to_string(float in)
+{
+  return std::format("{:.10}", in);
+}
+
+std::string to_string(int64_t in)
+{
+  return std::to_string(in);
+}
+
+std::string to_string(int32_t in)
+{
+  return std::to_string(in);
+}
+
+std::string to_string(bool in)
+{
+  return in ? "true" : "false";
 }

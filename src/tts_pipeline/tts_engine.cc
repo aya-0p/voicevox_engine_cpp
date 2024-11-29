@@ -375,7 +375,7 @@ std::tuple<std::vector<int64_t>, std::vector<int64_t>, std::vector<int64_t>, std
   std::vector<std::string> phoneme_note_ids;
   for (auto &&note : *notes)
   {
-    if (note.lyric == "")
+    if (note.lyric.empty())
     {
       if (note.key != -1)
         throw "lyricが空文字列の場合、keyはnullである必要があります。";
@@ -410,7 +410,7 @@ std::tuple<std::vector<int64_t>, std::vector<int64_t>, std::vector<int64_t>, std
           throw "lyricが不正です";
       }
       Phoneme phoneme_temp;
-      int32_t consonant_id = consonant == "" ? -1 : Phoneme::id(consonant);
+      int32_t consonant_id = consonant.empty() ? -1 : Phoneme::id(consonant);
       int32_t vowel_id = Phoneme::id(vowel);
       note_lengths.emplace_back(note.frame_length);
       note_consonants.emplace_back(consonant_id);
@@ -472,7 +472,7 @@ std::vector<AccentPhrase> TTSEngine::update_length(std::vector<AccentPhrase> *ac
   }
   for (size_t i = 0; i < moras.size(); i++)
   {
-    if (moras[i]->consonant == "")
+    if (moras[i]->consonant.empty())
       moras[i]->consonant_length = 0;
     else
       moras[i]->consonant_length = phoneme_lengths[vowel_indexes[i] - 1];
